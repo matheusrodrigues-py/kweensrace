@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: kweens-drag-race
+    runtime: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 24.14.1
+      - key: STORAGE_DIR
+        value: /var/data
+      - key: STAFF_USER
+        value: admin
+      - key: STAFF_PASSWORD
+        sync: false
+    disk:
+      name: kweens-data
+      mountPath: /var/data
+      sizeGB: 1

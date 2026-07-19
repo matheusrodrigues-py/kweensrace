@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#070309">
+  <title>Inscrição recebida — Kweens Drag Race</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/confirmacao.css">
+</head>
+<body>
+  <main class="confirmation-shell">
+    <section class="confirmation-hero" aria-labelledby="confirmationTitle">
+      <img class="confirmation-logo" src="assets/images/logo-kweens-transparent.png" alt="Kweens Drag Race">
+      <div class="confirmation-title" id="confirmationTitle">
+        <span>Inscrição</span>
+        <strong>Recebida</strong>
+        <em>com sucesso!</em>
+      </div>
+      <div class="confirmation-copy">
+        <p>Você acaba de entrar oficialmente na corrida.<br>O seu brilho nos chamou atenção<br>e agora, o jogo começou de verdade.</p>
+        <strong>O trono nunca esteve tão perto.</strong>
+      </div>
+    </section>
+
+    <section class="confirmation-content">
+      <div class="receipt-grid">
+        <article class="receipt-card">
+          <span>Protocolo da inscrição</span>
+          <div><strong id="protocol">—</strong><button id="copyProtocol" type="button" aria-label="Copiar protocolo" title="Copiar protocolo">▣</button></div>
+        </article>
+        <article class="receipt-card">
+          <span>Data e hora</span>
+          <div><strong id="date">—</strong><i aria-hidden="true">▦</i></div>
+        </article>
+      </div>
+
+      <article class="next-steps">
+        <h2>O que acontece agora?</h2>
+        <ol>
+          <li><i>⌕</i><b>1</b><span>Triagem de perfil e materiais</span></li>
+          <li><i>♙</i><b>2</b><span>Avaliação artística e de conceito</span></li>
+          <li><i>♬</i><b>3</b><span>Entrevistas selecionadas</span></li>
+          <li><i>♕</i><b>4</b><span>Anúncio das escolhidas</span></li>
+        </ol>
+        <p>Sua história merece ser vista.<br><strong>Boa sorte, Kween! ✦</strong></p>
+      </article>
+
+      <div class="confirmation-actions">
+        <a class="home-button" href="index.html">Voltar para a home</a>
+        <button class="download-button" type="button" id="downloadReceipt">Baixar comprovante <span>⇩</span></button>
+      </div>
+    </section>
+  </main>
+  <div class="confirmation-toast" id="toast" role="status" aria-live="polite">Protocolo copiado.</div>
+  <script>
+    const saved = JSON.parse(localStorage.getItem('kweensConfirmation') || '{}');
+    const protocol = saved.protocolo || 'KDR-DEMONSTRAÇÃO';
+    const sentAt = saved.data || new Date().toLocaleString('pt-BR');
+    document.querySelector('#protocol').textContent = protocol;
+    document.querySelector('#date').textContent = sentAt;
+    const toast = document.querySelector('#toast');
+    document.querySelector('#copyProtocol').addEventListener('click', async () => {
+      await navigator.clipboard.writeText(protocol);
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    });
+    document.querySelector('#downloadReceipt').addEventListener('click', () => window.print());
+  </script>
+</body>
+</html>
