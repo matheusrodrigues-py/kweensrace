@@ -4,3 +4,4 @@ uploads/
 senha.txt
 .env
 .env.*
+node_modules/
