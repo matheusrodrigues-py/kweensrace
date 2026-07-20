@@ -1,3 +1,6 @@
 data/
 uploads/
 *.log
+senha.txt
+.env
+.env.*
