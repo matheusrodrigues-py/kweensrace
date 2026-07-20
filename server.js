@@ -156,11 +156,20 @@ async function api(req, res, url) {
   }
   const fileMatch = url.pathname.match(/^\/api\/staff\/files\/(\d+)$/);
   if (fileMatch && req.method === 'GET') {
-    const { data: file, error } = await supabase.from('application_files').select('storage_path').eq('id', fileMatch[1]).single();
+    const { data: file, error } = await supabase.from('application_files').select('storage_path,mime_type,original_name').eq('id', fileMatch[1]).single();
     if (error || !file) return json(res, 404, { error: 'Arquivo não encontrado.' });
-    const { data: signed, error: signedError } = await supabase.storage.from(SUPABASE_BUCKET).createSignedUrl(file.storage_path, 60);
-    if (signedError) return json(res, 500, { error: 'Não foi possível abrir o arquivo.' });
-    res.writeHead(302, { Location: signed.signedUrl, 'Cache-Control': 'no-store' }); return res.end();
+    const { data: storedFile, error: downloadError } = await supabase.storage.from(SUPABASE_BUCKET).download(file.storage_path);
+    if (downloadError || !storedFile) return json(res, 500, { error: 'Não foi possível abrir o arquivo.' });
+    const content = Buffer.from(await storedFile.arrayBuffer());
+    const inlineName = String(file.original_name || 'imagem').replace(/["\r\n]/g, '');
+    res.writeHead(200, {
+      'Content-Type': file.mime_type || storedFile.type || 'application/octet-stream',
+      'Content-Length': content.length,
+      'Content-Disposition': `inline; filename="${inlineName}"`,
+      'Cache-Control': 'private, max-age=300',
+      'X-Content-Type-Options': 'nosniff'
+    });
+    return res.end(content);
   }
   return json(res, 404, { error: 'Rota não encontrada.' });
 }
